@@ -8,9 +8,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        String[] version = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
         try {
-            System.out.println(Bukkit.getServer().getClass().getPackage().getName());
-            String[] version = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
             Class<? extends IVersionLoader> loaderClass =
                 (Class<? extends IVersionLoader>) this.getClass().getClassLoader()
                 .loadClass("org.redstom.plugin." + version[version.length - 1].split("-")[0].replace(".", "_") +
@@ -20,7 +19,7 @@ public class Main extends JavaPlugin {
             loader.load();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Unsupported version : " + version[version.length - 1] + " !");
         }
 
     }
