@@ -31,18 +31,16 @@ edit the onEnable as follows :
 
 ```java
 try{
-    Class<?extends IVersionLoader> loaderClass=
-    (Class<?extends IVersionLoader>)this.getClass().getClassLoader()
     // Replace here the your.package with the new package name
-    .loadClass("your.package"+version[version.length-1].split("-")[0].replace(".","_")+
-    ".VersionLoader");
+    Class<? extends IVersionLoader> loaderClass = (Class<? extends IVersionLoader>) this.getClass().getClassLoader()
+        .loadClass("your.package" + version[version.length-1].split("-")[0].replace(".","_") + ".VersionLoader");
 
     IVersionLoader loader=loaderClass.getConstructor().newInstance();
     loader.load();
 
-    }catch(Exception e){
+} catch (Exception e) {
     throw new IllegalArgumentException("Unsupported version : "+version[version.length-1]+" !");
-    }
+}
 ```
 
 ## Add a new version :
