@@ -15,7 +15,7 @@ The version loading system is already implemented in the core module.
 
 ## Build the project :
 
-To build the plugin, you just have to launch the task `:core:build`. Your plugin
+To build the plugin, you just have to launch the task `:core:buildPlugin`. Your plugin
 will be built in the `core/build/libs` directory.
 
 ## Rename the packages :
@@ -30,16 +30,14 @@ And finally, you can go to the `core/src/main/java/your/package/Main.java`, and
 edit the onEnable as follows :
 
 ```java
-try{
+try {
     // Replace here the your.package with the new package name
-    Class<? extends IVersionLoader> loaderClass = (Class<? extends IVersionLoader>) this.getClass().getClassLoader()
-        .loadClass("your.package" + version[version.length-1].split("-")[0].replace(".","_") + ".VersionLoader");
+    Class<?> loaderClass = this.getClass().getClassLoader()
+        .loadClass("org.redstom.plugin." + version.split("-")[0].replace(".", "_") + ".VersionLoader");
 
-    IVersionLoader loader=loaderClass.getConstructor().newInstance();
-    loader.load();
-
+    IVersionLoader.class.getMethod("load").invoke(loaderClass.getConstructor().newInstance());
 } catch (Exception e) {
-    throw new IllegalArgumentException("Unsupported version : "+version[version.length-1]+" !");
+    throw new IllegalArgumentException("Unsupported version : " + version + " !");
 }
 ```
 
@@ -62,10 +60,6 @@ In the folder of the module, create a `build.gradle` file and fill it with the
 following content :
 
 ```groovy
-plugins {
-    id 'java'
-}
-
 dependencies {
     // Replace VERSION with the version you want and make sure that you've run
     // BuildTools for this version before going further.
@@ -76,26 +70,7 @@ dependencies {
 Then, create a `src/main/java/` folder inside the module, that's where you'll
 put your code.
 
-### Step 3 : Configure the build to consider your version
-
-To include the version specific code into the final jar, you just have to go
-into the `core/build.gradle` file and edit the line 16 :
-
-```groovy
-sourceSets {
-    main {
-        java {
-            // Replace VERSION with the name of the module you've just created
-            srcDirs 'src', '../1_13/src', '../1_14/src', '../VERSION/src'
-            resources {
-                srcDir 'resources'
-            }
-        }
-    }
-}
-```
-
-### Step 4 : Add the version loader
+### Step 3 : Add the version loader
 
 Create the `MODULE/src/main/java/your/package/VERSION/VersionLoader.java` file,
 replacing `MODULE` with the name of the module you've created, and `VERSION`
