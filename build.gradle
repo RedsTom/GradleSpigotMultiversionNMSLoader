@@ -19,6 +19,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly project(':core')
+        if(project.name != 'core') {
+            compileOnly project(':core')
+        }
     }
 }
